@@ -8,8 +8,6 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +15,6 @@ import com.bukalapak.keyfinder.databinding.FragmentKeyFinderBinding
 import org.altbeacon.beacon.BeaconConsumer
 import org.altbeacon.beacon.BeaconManager
 import org.altbeacon.beacon.BeaconParser
-import org.altbeacon.beacon.Region
 
 /**
  * Created on : November/17/2017
@@ -52,15 +49,6 @@ class KeyFinderFragment : Fragment(), BeaconConsumer {
         beaconManager.unbind(this)
     }
 
-    private fun requestLocationPermissions() {
-
-        val permissions = arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-
-        ActivityCompat.requestPermissions(activity, permissions, REQUEST_LOCATION_PERMISSION_CODE)
-    }
-
     override fun getApplicationContext(): Context {
         return activity.applicationContext
     }
@@ -75,6 +63,15 @@ class KeyFinderFragment : Fragment(), BeaconConsumer {
 
     override fun onBeaconServiceConnect() {
         // Do something with beacon
+    }
+
+    private fun requestLocationPermissions() {
+
+        val permissions = arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+
+        ActivityCompat.requestPermissions(activity, permissions, REQUEST_LOCATION_PERMISSION_CODE)
     }
 
     companion object {
