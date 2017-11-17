@@ -21,7 +21,7 @@ import org.altbeacon.beacon.*
  * Company    : Bukalapak
  * Project    : KeyFinder
  */
-class KeyFinderFragment : Fragment(), BeaconConsumer, MonitorNotifier {
+class KeyFinderFragment : Fragment(), BeaconConsumer, MonitorNotifier, RangeNotifier {
 
     private lateinit var binding: FragmentKeyFinderBinding
     private lateinit var beaconManager: BeaconManager
@@ -62,19 +62,26 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, MonitorNotifier {
     }
 
     override fun onBeaconServiceConnect() {
-        beaconManager.startMonitoringBeaconsInRegion(Region(BEACON_MONITORING_ID, null, null))
+        beaconManager.startRangingBeaconsInRegion(Region(BEACON_MONITORING_ID, null, null, null))
     }
 
     override fun didDetermineStateForRegion(state: Int, region: Region) {
-        Log.i(TAG, "didDetermineStateForRegion " + state)
+        Log.i(TAG, "didDetermineStateForRegion $state $region")
     }
 
     override fun didEnterRegion(region: Region) {
-        Log.i(TAG, "didEnterRegion " + region.id1)
+        Log.i(TAG, "didEnterRegion $region")
     }
 
     override fun didExitRegion(region: Region) {
-        Log.i(TAG, "didExitRegion " + region.id1)
+        Log.i(TAG, "didExitRegion $region")
+    }
+
+    override fun didRangeBeaconsInRegion(beacons: MutableCollection<Beacon>, region: Region) {
+
+        for (beacon in beacons) {
+            Log.i(TAG, "didRangeBeacon $beacon")
+        }
     }
 
     private fun requestLocationPermissions() {
