@@ -14,8 +14,6 @@ import org.altbeacon.beacon.BeaconManager
 import org.altbeacon.beacon.BeaconParser
 import org.altbeacon.beacon.Region
 
-
-
 class MainActivity : AppCompatActivity(), BeaconConsumer{
 
     var beaconManager : BeaconManager? = null
@@ -27,6 +25,7 @@ class MainActivity : AppCompatActivity(), BeaconConsumer{
         setContentView(R.layout.activity_main)
         pagerAdapter = PagerAdapter(supportFragmentManager)
         viewContainer.adapter = pagerAdapter
+        createTabIcons()
 
         ActivityCompat.requestPermissions(this,
                 arrayOf( Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
@@ -40,10 +39,13 @@ class MainActivity : AppCompatActivity(), BeaconConsumer{
         beaconManager?.bind(this)
     }
 
+    private fun createTabIcons() {
+
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
@@ -52,8 +54,8 @@ class MainActivity : AppCompatActivity(), BeaconConsumer{
 
     override fun onBeaconServiceConnect() {
 
-        beaconManager?.addRangeNotifier({ beacons, region ->
-            if (beacons.size > 0) {
+        beaconManager?.addRangeNotifier({ beacons, _ ->
+            if (beacons.isNotEmpty()) {
                 Log.i(TAG, "The first beacon I see is about " + beacons.iterator().next().distance + " meters away.")
                 beaconManager?.stopRangingBeaconsInRegion(DIGIBAL)
             }
@@ -68,15 +70,13 @@ class MainActivity : AppCompatActivity(), BeaconConsumer{
     }
 
     class PagerAdapter(fm: FragmentManager?) : FragmentPagerAdapter(fm) {
-
         val NUM_ITEMS = 2
 
-
         override fun getItem(position: Int): Fragment {
-            when (position) {
-                0 -> return KeyFinderFragment()
-                1 -> return SettingFragment()
-                else -> return KeyFinderFragment()
+            return when (position) {
+                0 -> KeyFinderFragment()
+                1 -> SettingFragment()
+                else -> KeyFinderFragment()
             }
         }
 
