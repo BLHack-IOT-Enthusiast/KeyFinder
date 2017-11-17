@@ -16,24 +16,18 @@
         android:layout_height="match_parent"/>
 
     <LinearLayout
-        android:weightSum="2"
+        android:background="@color/mainBlueDark"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="40dp">
 
-        <Button
-            android:text="Sample KeyFinder"
-            android:layout_weight="1"
-            android:id="@+id/buttonKeyFinder"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
-
-        <Button
-            android:text="Sample Setting"
-            android:layout_weight="1"
-            android:id="@+id/buttonSetting"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            app:tabGravity="fill"
+            app:tabMode="fixed" />
 
     </LinearLayout>
 
