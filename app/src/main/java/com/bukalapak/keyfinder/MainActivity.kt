@@ -3,8 +3,12 @@ package com.bukalapak.keyfinder
 import android.Manifest
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import kotlinx.android.synthetic.main.activity_main.*
 import org.altbeacon.beacon.BeaconConsumer
 import org.altbeacon.beacon.BeaconManager
 import org.altbeacon.beacon.BeaconParser
@@ -16,10 +20,13 @@ class MainActivity : AppCompatActivity(), BeaconConsumer{
 
     var beaconManager : BeaconManager? = null
     val PERMISSION_REQUEST_COARSE_LOCATION = 1
+    var pagerAdapter : PagerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        pagerAdapter = PagerAdapter(supportFragmentManager)
+        viewContainer.adapter = pagerAdapter
 
         ActivityCompat.requestPermissions(this,
                 arrayOf( Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
@@ -44,21 +51,6 @@ class MainActivity : AppCompatActivity(), BeaconConsumer{
     }
 
     override fun onBeaconServiceConnect() {
-//        beaconManager?.addMonitorNotifier(object : MonitorNotifier {
-//
-//            override fun didDetermineStateForRegion(p0: Int, p1: Region?) {
-//                Log.i(TAG, "I have just switched from seeing/not seeing beacons: "+p0)
-//            }
-//
-//            override fun didEnterRegion(p0: Region?) {
-//                Log.i(TAG, "I just saw an beacon for the first time!");
-//            }
-//
-//            override fun didExitRegion(p0: Region?) {
-//                Log.i(TAG, "I no longer see an beacon")
-//
-//            }
-//        })
 
         beaconManager?.addRangeNotifier({ beacons, region ->
             if (beacons.size > 0) {
@@ -71,6 +63,25 @@ class MainActivity : AppCompatActivity(), BeaconConsumer{
             beaconManager?.startRangingBeaconsInRegion(DIGIBAL)
         } catch (e: Throwable) {
             Log.e(TAG, e.toString())
+        }
+
+    }
+
+    class PagerAdapter(fm: FragmentManager?) : FragmentPagerAdapter(fm) {
+
+        val NUM_ITEMS = 2
+
+
+        override fun getItem(position: Int): Fragment {
+            when (position) {
+                0 -> return KeyFinderFragment()
+                1 -> return SettingFragment()
+                else -> return KeyFinderFragment()
+            }
+        }
+
+        override fun getCount(): Int {
+            return NUM_ITEMS
         }
 
     }
