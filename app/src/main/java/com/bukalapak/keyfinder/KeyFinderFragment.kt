@@ -8,13 +8,12 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bukalapak.keyfinder.databinding.FragmentKeyFinderBinding
-import org.altbeacon.beacon.BeaconConsumer
-import org.altbeacon.beacon.BeaconManager
-import org.altbeacon.beacon.BeaconParser
+import org.altbeacon.beacon.*
 
 /**
  * Created on : November/17/2017
@@ -22,7 +21,7 @@ import org.altbeacon.beacon.BeaconParser
  * Company    : Bukalapak
  * Project    : KeyFinder
  */
-class KeyFinderFragment : Fragment(), BeaconConsumer {
+class KeyFinderFragment : Fragment(), BeaconConsumer, MonitorNotifier {
 
     private lateinit var binding: FragmentKeyFinderBinding
     private lateinit var beaconManager: BeaconManager
@@ -34,6 +33,7 @@ class KeyFinderFragment : Fragment(), BeaconConsumer {
 
         beaconManager = BeaconManager.getInstanceForApplication(context);
         beaconManager.beaconParsers.add(BeaconParser().setBeaconLayout(BEACON_LAYOUT))
+        beaconManager.addMonitorNotifier(this)
         beaconManager.bind(this)
     }
 
@@ -62,7 +62,19 @@ class KeyFinderFragment : Fragment(), BeaconConsumer {
     }
 
     override fun onBeaconServiceConnect() {
-        // Do something with beacon
+        beaconManager.startMonitoringBeaconsInRegion(Region(BEACON_MONITORING_ID, null, null))
+    }
+
+    override fun didDetermineStateForRegion(state: Int, region: Region) {
+        Log.i(TAG, "didDetermineStateForRegion " + state)
+    }
+
+    override fun didEnterRegion(region: Region) {
+        Log.i(TAG, "didEnterRegion " + region.id1)
+    }
+
+    override fun didExitRegion(region: Region) {
+        Log.i(TAG, "didExitRegion " + region.id1)
     }
 
     private fun requestLocationPermissions() {
@@ -76,8 +88,8 @@ class KeyFinderFragment : Fragment(), BeaconConsumer {
 
     companion object {
         val TAG = KeyFinderFragment::class.java.simpleName
-
         val REQUEST_LOCATION_PERMISSION_CODE = 1
+        val BEACON_MONITORING_ID = "KeyFinder"
         val BEACON_LAYOUT = "m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"
     }
 }
