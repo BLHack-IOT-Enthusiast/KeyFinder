@@ -4,16 +4,19 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bukalapak.keyfinder.databinding.FragmentKeyFinderBinding
 import org.altbeacon.beacon.*
+import java.util.*
 
 /**
  * Created on : November/17/2017
@@ -29,12 +32,12 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, MonitorNotifier, RangeNoti
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        requestLocationPermissions()
-
         beaconManager = BeaconManager.getInstanceForApplication(context);
         beaconManager.beaconParsers.add(BeaconParser().setBeaconLayout(BEACON_LAYOUT))
         beaconManager.addMonitorNotifier(this)
-        beaconManager.bind(this)
+        beaconManager.addRangeNotifier(this)
+
+        startBeaconService()
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -47,6 +50,19 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, MonitorNotifier, RangeNoti
         super.onDestroy()
 
         beaconManager.unbind(this)
+        beaconManager.removeRangeNotifier(this)
+        beaconManager.removeMonitorNotifier(this)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+
+        if (requestCode == REQUEST_LOCATION_PERMISSION_CODE
+                && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
+
+            beaconManager.bind(this)
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun getApplicationContext(): Context {
@@ -70,27 +86,37 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, MonitorNotifier, RangeNoti
     }
 
     override fun didEnterRegion(region: Region) {
-        Log.i(TAG, "didEnterRegion $region")
+        beaconManager.startRangingBeaconsInRegion(region)
     }
 
     override fun didExitRegion(region: Region) {
-        Log.i(TAG, "didExitRegion $region")
+        beaconManager.stopRangingBeaconsInRegion(region)
     }
 
     override fun didRangeBeaconsInRegion(beacons: MutableCollection<Beacon>, region: Region) {
 
-        for (beacon in beacons) {
-            Log.i(TAG, "didRangeBeacon $beacon")
+        if (beacons.isNotEmpty()) {
+            binding.distanceLabel.text = String.format("%.1f", beacons.first().distance)
+            binding.nameLabel.text = beacons.first().bluetoothName
+
+        } else {
+            binding.distanceLabel.text = "0"
+            binding.nameLabel.text = ""
         }
     }
 
-    private fun requestLocationPermissions() {
+    private fun startBeaconService() {
 
         val permissions = arrayOf(
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION)
 
-        ActivityCompat.requestPermissions(activity, permissions, REQUEST_LOCATION_PERMISSION_CODE)
+        if (ContextCompat.checkSelfPermission(context, permissions.first()) == PackageManager.PERMISSION_GRANTED) {
+            beaconManager.bind(this)
+
+        } else {
+            ActivityCompat.requestPermissions(activity, permissions, REQUEST_LOCATION_PERMISSION_CODE)
+        }
     }
 
     companion object {

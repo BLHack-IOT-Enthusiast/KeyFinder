@@ -48,14 +48,13 @@
                 tools:ignore="HardcodedText" />
 
             <TextView
+                android:id="@+id/name_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/distance_label"
                 android:layout_centerHorizontal="true"
-                android:text="Distance"
                 android:textSize="17sp"
-                android:textColor="@android:color/white"
-                tools:ignore="HardcodedText" />
+                android:textColor="@android:color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
