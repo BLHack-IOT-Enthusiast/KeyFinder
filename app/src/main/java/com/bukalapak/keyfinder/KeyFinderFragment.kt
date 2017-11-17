@@ -21,6 +21,8 @@ class KeyFinderFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_key_finder, container, false)
 
+        
+
         return binding.root
     }
 }
