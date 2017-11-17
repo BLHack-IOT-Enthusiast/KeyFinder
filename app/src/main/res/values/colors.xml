@@ -2,12 +2,16 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
+<<<<<<< HEAD
     <color name="colorAccent">#FF4081</color>
 <<<<<<< HEAD
     <color name="colorWhite">#a3ffffff</color>
     <color name="colorSubtitle">#26ffffff</color>
 
 =======
+=======
+    <color name="colorAccent">#F14A4C</color>
+>>>>>>> fd4e9d4d2e16b38e62e36529385f4e62c070f024
     <color name="mainBlueDark">#2f1763</color>
 >>>>>>> cc19df4a7cda82930a11bdc405cb7ffbe62ef0c1
 </resources>
