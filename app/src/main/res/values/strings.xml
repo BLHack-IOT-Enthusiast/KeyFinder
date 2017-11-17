@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">KeyFinder</string>
+    <string name="beacon_list_item_distance">%1$s m</string>
 </resources>
