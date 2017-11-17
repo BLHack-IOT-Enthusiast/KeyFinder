@@ -14,6 +14,10 @@ import android.view.ViewGroup
  */
 class SettingFragment : Fragment() {
 
+    init {
+
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
