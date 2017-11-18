@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mainBlueDark"
+    android:background="@drawable/shape_gradient_linear"
     tools:context="com.bukalapak.keyfinder.MainActivity">
 
     <android.support.v4.view.ViewPager
@@ -16,7 +16,6 @@
         android:layout_height="0dp"/>
 
     <LinearLayout
-        android:background="@color/mainBlueDark"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="40dp">

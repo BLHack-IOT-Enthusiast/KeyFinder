@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import com.bukalapak.keyfinder.databinding.FragmentKeyFinderBinding
 import org.altbeacon.beacon.*
 import java.util.*
@@ -36,12 +37,13 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, MonitorNotifier, RangeNoti
         beaconManager.beaconParsers.add(BeaconParser().setBeaconLayout(BEACON_LAYOUT))
         beaconManager.addMonitorNotifier(this)
         beaconManager.addRangeNotifier(this)
-
-        startBeaconService()
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_key_finder, container, false)
+
+        binding.keyButton.setOnClickListener { startBeaconService() }
+        binding.keyRipple.stopRipple()
 
         return binding.root
     }
@@ -112,7 +114,9 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, MonitorNotifier, RangeNoti
                 Manifest.permission.ACCESS_FINE_LOCATION)
 
         if (ContextCompat.checkSelfPermission(context, permissions.first()) == PackageManager.PERMISSION_GRANTED) {
+
             beaconManager.bind(this)
+            binding.keyRipple.startRipple()
 
         } else {
             ActivityCompat.requestPermissions(activity, permissions, REQUEST_LOCATION_PERMISSION_CODE)
