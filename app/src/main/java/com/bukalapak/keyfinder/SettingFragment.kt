@@ -22,8 +22,13 @@ class SettingFragment : Fragment() {
     fun bind(beacon: Beacon) {
         this.beacon = beacon
 
-        binding.tvAlias.text = beacon.bluetoothName
+        binding.tvDevice.text = if (beacon.bluetoothName.isNullOrEmpty()) { (null) } else { beacon.bluetoothName }
+        binding.tvAlias.text = ""
         binding.tvMac.text = beacon.bluetoothAddress
+        binding.tvBoundedstat.text = ""
+        binding.tvUid.text = if (beacon.identifiers.size > 0) { beacon.identifiers[0].toUuid().toString() } else { "" }
+        binding.tvMajor.text = if (beacon.identifiers.size > 1) { beacon.identifiers[1].toInt().toString() } else { "" }
+        binding.tvMinor.text = if (beacon.identifiers.size > 2) { beacon.identifiers[2].toInt().toString() } else { "" }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
