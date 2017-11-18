@@ -69,7 +69,6 @@
 
                     <Button
                         android:id="@+id/btnSimpan"
-                        android:clickable="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:minWidth="0dp"
@@ -130,28 +129,6 @@
                     />
                 <TextView
                     android:id="@+id/tvMac"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="start"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="12dp"
-                    android:textSize="12sp"
-                    android:textColor="@color/colorWhite"
-
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Bounded Status"
-                    android:layout_weight="1"
-                    android:gravity="start"
-                    android:textSize="12sp"
-                    android:textColor="@color/colorSubtitle"
-
-                    />
-                <TextView
-                    android:id="@+id/tvBoundedstat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -234,17 +211,30 @@
                 android:id="@+id/notFound"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="120dp"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
                 >
 
                 <TextView
                     android:id="@+id/tvNodevice"
                     android:layout_width="wrap_content"
-                    android:layout_height="120dp"
-                    android:text="No Device Found,
-    Please Scan Device"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="No Device Found,"
+                    android:textColor="@color/colorWhite"
                     android:gravity="center"
                     />
+
+                <TextView
+                    android:id="@+id/tvScanDevice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Please Scan Device"
+                    android:textColor="@color/colorTextLink"
+                    android:clickable="true"
+                    android:gravity="center"
+                    />
+
 
             </LinearLayout>
 

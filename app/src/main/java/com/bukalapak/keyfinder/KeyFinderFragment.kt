@@ -104,20 +104,17 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, RangeNotifier {
     }
 
     override fun didRangeBeaconsInRegion(beacons: MutableCollection<Beacon>, region: Region) {
-
         activity.runOnUiThread {
-
             if (beacons.isNotEmpty() && currentlyFindingKey) {
                 val beacon = beacons.first()
-
-                binding.distanceLabel.text = String.format("%.1f", beacon.distance)
-
+                binding.distanceLabel.text = String.format("%.2f", beacon.distance/100)
                 callback?.onDetectBeacon(beacon)
-
-            } else {
-                binding.distanceLabel.text = "0"
             }
         }
+    }
+
+    fun startScan() {
+        binding.keyButton.performClick()
     }
 
     private fun startBeaconService() {
@@ -158,6 +155,5 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, RangeNotifier {
 }
 
 interface KeyFinderFragmentCallback {
-
     fun onDetectBeacon(beacon: Beacon)
 }

@@ -10,8 +10,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.altbeacon.beacon.Beacon
 
-class MainActivity : FragmentActivity(), KeyFinderFragmentCallback {
-
+class MainActivity : FragmentActivity(), KeyFinderFragmentCallback, SettingFragmentCallback {
     private lateinit var pagerAdapter : PagerAdapter
     private var settingFragment: SettingFragment? = null
 
@@ -42,6 +41,14 @@ class MainActivity : FragmentActivity(), KeyFinderFragmentCallback {
 
     override fun onDetectBeacon(beacon: Beacon) {
         settingFragment?.bind(beacon)
+    }
+
+    override fun onRequestScan() {
+        viewContainer.setCurrentItem(1, true)
+        val firstItem = pagerAdapter.getItem(1)
+        if (firstItem is KeyFinderFragment) {
+            firstItem.startScan()
+        }
     }
 
     class PagerAdapter(fm: FragmentManager?, var context: Context) : FragmentPagerAdapter(fm) {
