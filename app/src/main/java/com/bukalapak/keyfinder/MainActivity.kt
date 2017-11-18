@@ -35,20 +35,17 @@ class MainActivity : FragmentActivity(), KeyFinderFragmentCallback, SettingFragm
         }
 
         if (fragment is SettingFragment) {
+            fragment.callback = this
             settingFragment = fragment
         }
     }
 
-    override fun onDetectBeacon(beacon: Beacon) {
+    override fun onDetectBeacon(beacon: Beacon?) {
         settingFragment?.bind(beacon)
     }
 
     override fun onRequestScan() {
-        viewContainer.setCurrentItem(1, true)
-        val firstItem = pagerAdapter.getItem(1)
-        if (firstItem is KeyFinderFragment) {
-            firstItem.startScan()
-        }
+        viewContainer.currentItem = 0
     }
 
     class PagerAdapter(fm: FragmentManager?, var context: Context) : FragmentPagerAdapter(fm) {

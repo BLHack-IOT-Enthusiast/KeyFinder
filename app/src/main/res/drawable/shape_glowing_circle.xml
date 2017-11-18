@@ -4,13 +4,13 @@
     <item>
         <shape
             android:shape="ring"
-            android:thickness="15dp"
+            android:thickness="80dp"
             android:useLevel="false">
 
             <gradient
                 android:type="radial"
-                android:gradientRadius="99%"
-                android:startColor="#05ffffff"
+                android:gradientRadius="43%"
+                android:startColor="#ffffff"
                 android:endColor="#00ffffff" />
         </shape>
     </item>

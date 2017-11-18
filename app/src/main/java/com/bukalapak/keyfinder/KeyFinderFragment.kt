@@ -50,6 +50,7 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, RangeNotifier {
         binding.keyButton.setOnClickListener {
 
             if (currentlyFindingKey) {
+                callback?.onDetectBeacon(null)
                 stopBeaconService()
 
             } else {
@@ -155,5 +156,5 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, RangeNotifier {
 }
 
 interface KeyFinderFragmentCallback {
-    fun onDetectBeacon(beacon: Beacon)
+    fun onDetectBeacon(beacon: Beacon?)
 }

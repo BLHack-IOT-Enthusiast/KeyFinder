@@ -19,6 +19,8 @@ class SettingFragment : Fragment() {
     private var beacon: Beacon? = null
     private lateinit var binding: FragmentSettingBinding
 
+    var callback: SettingFragmentCallback? = null
+
     fun bind(beacon: Beacon?) {
         this.beacon = beacon
 
@@ -60,7 +62,7 @@ class SettingFragment : Fragment() {
         }
 
         binding.tvScanDevice.setOnClickListener {
-            // TODO Change to KeyFinderFragment and start scan
+            callback?.onRequestScan()
         }
 
         if (beacon == null) {
