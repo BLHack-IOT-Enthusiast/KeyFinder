@@ -25,25 +25,37 @@ import java.util.*
  * Company    : Bukalapak
  * Project    : KeyFinder
  */
-class KeyFinderFragment : Fragment(), BeaconConsumer, MonitorNotifier, RangeNotifier {
+
+class KeyFinderFragment : Fragment(), BeaconConsumer, RangeNotifier {
+
+    var callback: KeyFinderFragmentCallback? = null
 
     private lateinit var binding: FragmentKeyFinderBinding
     private lateinit var beaconManager: BeaconManager
+
+    private var currentlyFindingKey: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         beaconManager = BeaconManager.getInstanceForApplication(context);
         beaconManager.beaconParsers.add(BeaconParser().setBeaconLayout(BEACON_LAYOUT))
-        beaconManager.addMonitorNotifier(this)
         beaconManager.addRangeNotifier(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_key_finder, container, false)
 
-        binding.keyButton.setOnClickListener { startBeaconService() }
         binding.keyRipple.stopRipple()
+        binding.keyButton.setOnClickListener {
+
+            if (currentlyFindingKey) {
+                stopBeaconService()
+
+            } else {
+                startBeaconService()
+            }
+        }
 
         return binding.root
     }
@@ -51,9 +63,7 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, MonitorNotifier, RangeNoti
     override fun onDestroy() {
         super.onDestroy()
 
-        beaconManager.unbind(this)
-        beaconManager.removeRangeNotifier(this)
-        beaconManager.removeMonitorNotifier(this)
+        stopBeaconService()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -80,30 +90,20 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, MonitorNotifier, RangeNoti
     }
 
     override fun onBeaconServiceConnect() {
-        beaconManager.startRangingBeaconsInRegion(Region(BEACON_MONITORING_ID, null, null, null))
-    }
-
-    override fun didDetermineStateForRegion(state: Int, region: Region) {
-        Log.i(TAG, "didDetermineStateForRegion $state $region")
-    }
-
-    override fun didEnterRegion(region: Region) {
-        beaconManager.startRangingBeaconsInRegion(region)
-    }
-
-    override fun didExitRegion(region: Region) {
-        beaconManager.stopRangingBeaconsInRegion(region)
+        beaconManager.startRangingBeaconsInRegion(BEACON_REGION)
     }
 
     override fun didRangeBeaconsInRegion(beacons: MutableCollection<Beacon>, region: Region) {
 
         if (beacons.isNotEmpty()) {
-            binding.distanceLabel.text = String.format("%.1f", beacons.first().distance)
-            binding.nameLabel.text = beacons.first().bluetoothName
+            val beacon = beacons.first()
+
+            binding.distanceLabel.text = String.format("%.1f", beacon.distance)
+
+            callback?.onDetectBeacon(beacon)
 
         } else {
             binding.distanceLabel.text = "0"
-            binding.nameLabel.text = ""
         }
     }
 
@@ -118,15 +118,31 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, MonitorNotifier, RangeNoti
             beaconManager.bind(this)
             binding.keyRipple.startRipple()
 
+            currentlyFindingKey = true
+
         } else {
             ActivityCompat.requestPermissions(activity, permissions, REQUEST_LOCATION_PERMISSION_CODE)
         }
     }
 
-    companion object {
-        val TAG = KeyFinderFragment::class.java.simpleName
-        val REQUEST_LOCATION_PERMISSION_CODE = 1
-        val BEACON_MONITORING_ID = "KeyFinder"
-        val BEACON_LAYOUT = "m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"
+    private fun stopBeaconService() {
+        beaconManager.unbind(this)
+        beaconManager.stopRangingBeaconsInRegion(BEACON_REGION)
+
+        binding.keyRipple.stopRipple()
+        binding.distanceLabel.text = "0"
+
+        currentlyFindingKey = false
     }
+
+    companion object {
+        val REQUEST_LOCATION_PERMISSION_CODE = 1
+        val BEACON_LAYOUT = "m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"
+        val BEACON_REGION = Region("KeyFinder", null, null, null)
+    }
+}
+
+interface KeyFinderFragmentCallback {
+
+    fun onDetectBeacon(beacon: Beacon)
 }

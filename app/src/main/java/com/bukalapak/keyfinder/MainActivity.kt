@@ -2,20 +2,19 @@ package com.bukalapak.keyfinder
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.*
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
+import org.altbeacon.beacon.Beacon
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : FragmentActivity(), KeyFinderFragmentCallback {
 
-    lateinit var pagerAdapter : PagerAdapter
+    private lateinit var pagerAdapter : PagerAdapter
+    private var settingFragment: SettingFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,17 +29,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
 
-    class PagerAdapter : FragmentPagerAdapter {
-        val NUM_ITEMS = 2
-        var context : Context
-        var dataTabTitle = mutableListOf("KeyFinder", "Setting")
-        var dataTabImage = mutableListOf(R.drawable.ic_arrow, R.drawable.ic_tools)
-
-        constructor(fm: FragmentManager?, context : Context) : super(fm) {
-            this.context = context
+        if (fragment is KeyFinderFragment) {
+            fragment.callback = this
         }
 
+        if (fragment is SettingFragment) {
+            settingFragment = fragment
+        }
+    }
+
+    override fun onDetectBeacon(beacon: Beacon) {
+        settingFragment?.bind(beacon)
+    }
+
+    class PagerAdapter(fm: FragmentManager?, var context: Context) : FragmentPagerAdapter(fm) {
+        val NUM_ITEMS = 2
+        var dataTabTitle = mutableListOf("KeyFinder", "Setting")
+        var dataTabImage = mutableListOf(R.drawable.ic_arrow, R.drawable.ic_tools)
 
         override fun getItem(position: Int): Fragment {
             return when (position) {
@@ -56,8 +64,8 @@ class MainActivity : AppCompatActivity() {
 
         fun getTabView(position : Int) : View {
             val view = LayoutInflater.from(context).inflate(R.layout.item_tab_layout, null)
-            var imageView = view.findViewById<ImageView>(R.id.imageIcon)
-            var textView = view.findViewById<TextView>(R.id.textTitle)
+            val imageView = view.findViewById<ImageView>(R.id.imageIcon)
+            val textView = view.findViewById<TextView>(R.id.textTitle)
 
             textView.text = dataTabTitle[position]
             imageView.setImageDrawable(ActivityCompat.getDrawable(context, dataTabImage[position]))
