@@ -48,7 +48,7 @@
                 android:layout_centerHorizontal="true"
                 android:text="Distance"
                 android:textSize="17sp"
-                android:textColor="@android:color/white"
+                android:textColor="@color/textSemiTransparent"
                 tools:ignore="HardcodedText" />
 
             <TextView
@@ -58,7 +58,7 @@
                 android:layout_centerHorizontal="true"
                 android:text="meters near you"
                 android:textSize="14sp"
-                android:textColor="@android:color/white"
+                android:textColor="@color/textSemiTransparent"
                 tools:ignore="HardcodedText" />
         </RelativeLayout>
 
@@ -100,7 +100,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Tap to find key"
-            android:textColor="@android:color/white"
+            android:textColor="@color/textSemiTransparent"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

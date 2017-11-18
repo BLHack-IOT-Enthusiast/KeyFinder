@@ -7,4 +7,6 @@
     <color name="colorSubtitle">#26ffffff</color>
     <color name="colorAccent">#F14A4C</color>
     <color name="colorAccentSemiTransparent">#44F14A4C</color>
+
+    <color name="textSemiTransparent">#88ffffff</color>
 </resources>
