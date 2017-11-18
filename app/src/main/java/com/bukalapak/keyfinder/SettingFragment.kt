@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.bukalapak.keyfinder.databinding.FragmentSettingBinding
 import org.altbeacon.beacon.Beacon
-import kotlin.properties.Delegates
 
 /**
  * Created on : November/17/2017
@@ -17,7 +16,6 @@ import kotlin.properties.Delegates
  * Project    : KeyFinder
  */
 class SettingFragment : Fragment() {
-
     private var beacon: Beacon? = null
     private lateinit var binding: FragmentSettingBinding
 
@@ -31,5 +29,22 @@ class SettingFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_setting, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.tvRename.setOnClickListener {
+            binding.vgEditName.visibility = View.VISIBLE
+            binding.vgName.visibility = View.GONE
+
+            binding.etName.setText(binding.tvDevice.text)
+        }
+
+        binding.btnSimpan.setOnClickListener {
+            binding.vgEditName.visibility = View.VISIBLE
+            binding.vgName.visibility = View.GONE
+
+            binding.tvDevice.setText(binding.etName.text)
+        }
     }
 }
