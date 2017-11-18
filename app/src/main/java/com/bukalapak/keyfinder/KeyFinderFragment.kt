@@ -10,14 +10,11 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import com.bukalapak.keyfinder.databinding.FragmentKeyFinderBinding
 import org.altbeacon.beacon.*
-import java.util.*
 
 /**
  * Created on : November/17/2017
@@ -47,6 +44,9 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, RangeNotifier {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_key_finder, container, false)
 
         binding.keyRipple.stopRipple()
+        binding.keyButton.visibility = View.INVISIBLE
+        binding.guideLabel.visibility = View.INVISIBLE
+
         binding.keyButton.setOnClickListener {
 
             if (currentlyFindingKey) {
@@ -60,6 +60,14 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, RangeNotifier {
         return binding.root
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        if (!beaconManager.isBound(this)) {
+            beaconManager.bind(this)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
@@ -71,10 +79,11 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, RangeNotifier {
         if (requestCode == REQUEST_LOCATION_PERMISSION_CODE
                 && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
 
-            beaconManager.bind(this)
-        }
+            startBeaconService()
 
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
     }
 
     override fun getApplicationContext(): Context {
@@ -90,12 +99,13 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, RangeNotifier {
     }
 
     override fun onBeaconServiceConnect() {
-        beaconManager.startRangingBeaconsInRegion(BEACON_REGION)
+        binding.keyButton.visibility = View.VISIBLE
+        binding.guideLabel.visibility = View.VISIBLE
     }
 
     override fun didRangeBeaconsInRegion(beacons: MutableCollection<Beacon>, region: Region) {
 
-        if (beacons.isNotEmpty()) {
+        if (beacons.isNotEmpty() && currentlyFindingKey) {
             val beacon = beacons.first()
 
             binding.distanceLabel.text = String.format("%.1f", beacon.distance)
@@ -115,7 +125,9 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, RangeNotifier {
 
         if (ContextCompat.checkSelfPermission(context, permissions.first()) == PackageManager.PERMISSION_GRANTED) {
 
-            beaconManager.bind(this)
+            beaconManager.startRangingBeaconsInRegion(BEACON_REGION)
+
+            binding.guideLabel.visibility = View.INVISIBLE
             binding.keyRipple.startRipple()
 
             currentlyFindingKey = true
@@ -126,11 +138,11 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, RangeNotifier {
     }
 
     private fun stopBeaconService() {
-        beaconManager.unbind(this)
         beaconManager.stopRangingBeaconsInRegion(BEACON_REGION)
 
         binding.keyRipple.stopRipple()
         binding.distanceLabel.text = "0"
+        binding.guideLabel.visibility = View.VISIBLE
 
         currentlyFindingKey = false
     }
