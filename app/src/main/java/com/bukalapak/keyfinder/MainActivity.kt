@@ -46,7 +46,7 @@ class MainActivity : FragmentActivity(), KeyFinderFragmentCallback {
 
     class PagerAdapter(fm: FragmentManager?, var context: Context) : FragmentPagerAdapter(fm) {
         val NUM_ITEMS = 2
-        var dataTabTitle = mutableListOf("KeyFinder", "Setting")
+        var dataTabTitle = mutableListOf("Key Finder", "Settings")
         var dataTabImage = mutableListOf(R.drawable.ic_arrow, R.drawable.ic_tools)
 
         override fun getItem(position: Int): Fragment {
