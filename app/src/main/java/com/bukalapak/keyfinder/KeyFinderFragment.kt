@@ -10,14 +10,11 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import com.bukalapak.keyfinder.databinding.FragmentKeyFinderBinding
 import org.altbeacon.beacon.*
-import java.util.*
 
 /**
  * Created on : November/17/2017
@@ -94,7 +91,6 @@ class KeyFinderFragment : Fragment(), BeaconConsumer, RangeNotifier {
     }
 
     override fun didRangeBeaconsInRegion(beacons: MutableCollection<Beacon>, region: Region) {
-
         if (beacons.isNotEmpty()) {
             val beacon = beacons.first()
 
